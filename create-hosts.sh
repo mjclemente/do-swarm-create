@@ -67,10 +67,19 @@ echo "Sleeping during housecleaning"
 ## take a breather - sometimes we try to SSH too soon
 sleep 60s
 
-echo "Back to work, initing the Swarm"
+printf "\n%s\n\n" "Back to work, initing the Swarm"
 
-## Run initial SSH command to add key and init swarm
-ssh -o StrictHostKeyChecking=accept-new root@$HOST_PUBLIC_IP docker swarm init --advertise-addr $HOST_PRIVATE_IP
+n=0
+until [ $n -ge 10 ]
+do
+  echo "Attempting to init Swarm"
+  ## Run initial SSH command to add key and init swarm
+  ssh -o StrictHostKeyChecking=accept-new root@$HOST_PUBLIC_IP docker swarm init --advertise-addr $HOST_PRIVATE_IP && break
+  n=$[$n+1]
+  ## If it failed, try to sleep, before retrying
+  echo "Attempt $n failed. Sleeping before retry"
+  sleep 30s
+done
 
 ## Get the Manager Join Token
 echo "Getting the manager join token"

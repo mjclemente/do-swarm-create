@@ -24,7 +24,7 @@ fi
 
 : "${DO_SSH_IDS:?Please set your DO_SSH_IDS}"
 ## formatting needs to be adjusted if there are multiple SSH Ids returned by doctl
-DO_SSH_IDS=${DO_SSH_IDS/[[:space:]]/,}
+DO_SSH_IDS=${DO_SSH_IDS//[[:space:]]/,}
 
 ## Provide prompt to make sure that user knows what they're doing
 while true; do

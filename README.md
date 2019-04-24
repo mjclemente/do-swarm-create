@@ -50,32 +50,32 @@ After completing the [prerequisites](#prerequisites) listed above, here are the 
 
 The options for this script are configured via environment variables. Here they are, with their default values:
 
-- **`DO_DROPLET_NAME`**
-  *Default*: swarm-node
+- **`DO_DROPLET_NAME`** 
+  *Default*: swarm-node 
   Name of the Droplets that are created, followed by incrementing numbers, i.e. `swarm-node-2`
-- **`DO_SIZE`**
-  *Default*: s-1vcpu-1gb ([$5/mo](https://www.digitalocean.com/pricing/#Compute))
+- **`DO_SIZE`** 
+  *Default*: s-1vcpu-1gb ([$5/mo](https://www.digitalocean.com/pricing/#Compute)) 
   Size of the Droplets being created. You can get a list of available options by running `doctl compute size list`
-- **`DO_ENABLE_BACKUPS`**
-  *Default*: true
+- **`DO_ENABLE_BACKUPS`** 
+  *Default*: true 
   Enables automatic weekly backups of the Droplets. This adds 20% to price. More about backups can be found [here](https://www.digitalocean.com/docs/images/backups/overview/).
-- **`DO_ENABLE_UFW`**
-  *Default*: true
+- **`DO_ENABLE_UFW`** 
+  *Default*: true 
   The UFW firewall is automatically enabled and configured for Docker Swarm use. If you plan on using a DigitalOcean firewall, you'll likely want to set this option to `false`, so that you don't need to manage two firewalls.
-- **`DO_REGION`**
-  *Default*: nyc1
+- **`DO_REGION`** 
+  *Default*: nyc1 
   Region in which the Droplet is created. Options can be seen by running `doctl compute region list`
-- **`DO_TAGS`**
-  *Default*: $DO_DROPLET_NAME,(master|worker)
+- **`DO_TAGS`** 
+  *Default*: $DO_DROPLET_NAME,(master|worker) 
   Custom labels for Droplets. Helpful for filtering in when using the DO API, or applying Firewall or Load Balancer rules. By default, the Droplet name variable is applied as a tag to all nodes in the Swarm, but you can override this. The `master` or `worker` tags are always included.
-- **`DO_MANAGER_COUNT`**
-  *Default*: 3
+- **`DO_MANAGER_COUNT`** 
+  *Default*: 3 
   Number of Swarm managers that should be created.
-- **`DO_WORKER_COUNT`**
-  *Default*: 0
+- **`DO_WORKER_COUNT`** 
+  *Default*: 0 
   Number of Swarm workers that should be created.
-- **`DO_SSH_IDS`**
-  *Default*: All SSH IDs added to your DO account
+- **`DO_SSH_IDS`** 
+  *Default*: All SSH IDs added to your DO account 
   List of SSH keys that should be added to the Droplets, referenced either via their DigitalOcean resource Id, or their fingerprint. If you don't want all the SSH keys in your DO account included, use the command `doctl compute ssh-key list` to retrieve your SSH keys and selectively add them to this variable.
 
 ## Questions

@@ -16,13 +16,13 @@ The aim of this script is to be straightforward - a (relatively) simple, mostly 
 
 While the aim is to keep this simple, there are a few requirements in order to use this script - they're listed here, along with links to the corresponding DigitalOcean guides:
 
-- **DigitalOcean account**
+- **DigitalOcean account**  
   Shameless plug here: [$100 promo with referral](https://m.do.co/c/8acbd6928587).
-- **SSH credentials added to your account** ([DO Guide](https://www.digitalocean.com/docs/droplets/how-to/add-ssh-keys/))
+- **SSH credentials added to your account** ([DO Guide](https://www.digitalocean.com/docs/droplets/how-to/add-ssh-keys/))  
   These provide access to the Droplets and are used by the script to init the Swarm, once the Droplets are created.
-- **Personal Access Token for the DigialOcean API** ([DO Guide](https://www.digitalocean.com/docs/api/create-personal-access-token/)).
+- **Personal Access Token for the DigialOcean API** ([DO Guide](https://www.digitalocean.com/docs/api/create-personal-access-token/)).  
   This is used by DigitalOcean's command-line client to create the Droplets and get information about your account
-- **Install DigitalOcean's official command-line client, `doctl`** ([DO Guide](https://github.com/digitalocean/doctl#installing-doctl))
+- **Install DigitalOcean's official command-line client, `doctl`** ([DO Guide](https://github.com/digitalocean/doctl#installing-doctl))  
   This will do most of the heavily lifting. It's an invaluable tool if you have an account with DigitalOcean, and necessary for this script. Their full `doctl` tutorial is [here](https://www.digitalocean.com/community/tutorials/how-to-use-doctl-the-official-digitalocean-command-line-client).
 
 ## Getting Started
@@ -50,32 +50,32 @@ After completing the [prerequisites](#prerequisites) listed above, here are the 
 
 The options for this script are configured via environment variables. Here they are, with their default values:
 
-- **`DO_DROPLET_NAME`** 
-  *Default*: swarm-node 
+- **`DO_DROPLET_NAME`**  
+  *Default*: swarm-node  
   Name of the Droplets that are created, followed by incrementing numbers, i.e. `swarm-node-2`
 - **`DO_SIZE`** 
   *Default*: s-1vcpu-1gb ([$5/mo](https://www.digitalocean.com/pricing/#Compute)) 
   Size of the Droplets being created. You can get a list of available options by running `doctl compute size list`
-- **`DO_ENABLE_BACKUPS`** 
-  *Default*: true 
+- **`DO_ENABLE_BACKUPS`**  
+  *Default*: true  
   Enables automatic weekly backups of the Droplets. This adds 20% to price. More about backups can be found [here](https://www.digitalocean.com/docs/images/backups/overview/).
-- **`DO_ENABLE_UFW`** 
-  *Default*: true 
+- **`DO_ENABLE_UFW`**  
+  *Default*: true  
   The UFW firewall is automatically enabled and configured for Docker Swarm use. If you plan on using a DigitalOcean firewall, you'll likely want to set this option to `false`, so that you don't need to manage two firewalls.
-- **`DO_REGION`** 
-  *Default*: nyc1 
+- **`DO_REGION`**  
+  *Default*: nyc1  
   Region in which the Droplet is created. Options can be seen by running `doctl compute region list`
-- **`DO_TAGS`** 
+- **`DO_TAGS`**  
   *Default*: $DO_DROPLET_NAME,(master|worker) 
   Custom labels for Droplets. Helpful for filtering in when using the DO API, or applying Firewall or Load Balancer rules. By default, the Droplet name variable is applied as a tag to all nodes in the Swarm, but you can override this. The `master` or `worker` tags are always included.
-- **`DO_MANAGER_COUNT`** 
-  *Default*: 3 
+- **`DO_MANAGER_COUNT`**  
+  *Default*: 3  
   Number of Swarm managers that should be created.
-- **`DO_WORKER_COUNT`** 
-  *Default*: 0 
+- **`DO_WORKER_COUNT`**  
+  *Default*: 0  
   Number of Swarm workers that should be created.
-- **`DO_SSH_IDS`** 
-  *Default*: All SSH IDs added to your DO account 
+- **`DO_SSH_IDS`**  
+  *Default*: All SSH IDs added to your DO account  
   List of SSH keys that should be added to the Droplets, referenced either via their DigitalOcean resource Id, or their fingerprint. If you don't want all the SSH keys in your DO account included, use the command `doctl compute ssh-key list` to retrieve your SSH keys and selectively add them to this variable.
 
 ## Questions

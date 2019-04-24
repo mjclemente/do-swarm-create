@@ -53,8 +53,8 @@ The options for this script are configured via environment variables. Here they 
 - **`DO_DROPLET_NAME`**  
   *Default*: swarm-node  
   Name of the Droplets that are created, followed by incrementing numbers, i.e. `swarm-node-2`
-- **`DO_SIZE`** 
-  *Default*: s-1vcpu-1gb ([$5/mo](https://www.digitalocean.com/pricing/#Compute)) 
+- **`DO_SIZE`**  
+  *Default*: s-1vcpu-1gb ([$5/mo](https://www.digitalocean.com/pricing/#Compute))  
   Size of the Droplets being created. You can get a list of available options by running `doctl compute size list`
 - **`DO_ENABLE_BACKUPS`**  
   *Default*: true  
@@ -66,7 +66,7 @@ The options for this script are configured via environment variables. Here they 
   *Default*: nyc1  
   Region in which the Droplet is created. Options can be seen by running `doctl compute region list`
 - **`DO_TAGS`**  
-  *Default*: $DO_DROPLET_NAME,(master|worker) 
+  *Default*: $DO_DROPLET_NAME,(master|worker)  
   Custom labels for Droplets. Helpful for filtering in when using the DO API, or applying Firewall or Load Balancer rules. By default, the Droplet name variable is applied as a tag to all nodes in the Swarm, but you can override this. The `master` or `worker` tags are always included.
 - **`DO_MANAGER_COUNT`**  
   *Default*: 3  

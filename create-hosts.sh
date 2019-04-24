@@ -3,11 +3,12 @@
 : "${DO_DROPLET_NAME:=swarm-node}"
 : "${DO_SIZE:=s-1vcpu-1gb}"
 : "${DO_ENABLE_BACKUPS:=true}"
+: "${DO_ENABLE_UFW:=true}"
 : "${DO_REGION:=nyc1}"
 : "${DO_TAGS:=$DO_DROPLET_NAME}"
 : "${DO_MANAGER_COUNT:=3}"
 : "${DO_WORKER_COUNT:=0}"
-## Image name set for convenience
+## Image name set for convenience (https://marketplace.digitalocean.com/apps/docker)
 DO_IMAGE_NAME=docker-18-04
 
 ## Determine if backups should be enabled
@@ -17,6 +18,15 @@ if [ "$DO_ENABLE_BACKUPS" = true ]; then
 else
   DO_ENABLE_BACKUPS="False"
   DO_BACKUP_OPTION=""
+fi
+
+## Determine if firewall should be enabled
+if [ "$DO_ENABLE_UFW" = true ]; then
+  DO_ENABLE_UFW="True"
+  DO_UFW_OPTION=$(cat ./partials/configure-ufw-firewall.sh)
+else
+  DO_ENABLE_UFW="False"
+  DO_UFW_OPTION=$(cat ./partials/disable-ufw-firewall.sh)
 fi
 
 ## The default is to add all the the SSH Ids in your DO account
@@ -34,12 +44,13 @@ Name: $DO_DROPLET_NAME
 Size: $DO_SIZE
 Region: $DO_REGION
 Enable Backups: $DO_ENABLE_BACKUPS
+Enable UFW Firewall: $DO_ENABLE_UFW
 Tags: $DO_TAGS
 Managers: $DO_MANAGER_COUNT
 Workers: $DO_WORKER_COUNT
 SSH IDs: $DO_SSH_IDS
 
-Do you wish to continue?" yn
+Do you wish to continue? " yn
     case $yn in
         [Yy]* ) echo "Proceeding with Swarm creation."; break;;
         [Nn]* ) echo "Swarm creation cancelled."; exit;;
@@ -49,6 +60,8 @@ done
 
 ## Read the file to generate our user data that will be run when the Droplet is first created
 DO_USER_DATA=$(cat ./user-data.sh)
+DO_USER_DATA="${DO_UFW_OPTION}${DO_USER_DATA}"
+
 printf "\n%s\n\n" "Beginning to create the first Droplet... this might take a little while"
 ## Create the first host - this one will init the Swarm.
 ## We enable monitoring, backups, and private networking
@@ -73,7 +86,7 @@ n=0
 until [ $n -ge 10 ]
 do
   echo "Attempting to init Swarm"
-  ## Run initial SSH command to add key and init swarm
+  ## Run initial SSH command to add key and init swarm - More on the host key checking here: http://manpages.ubuntu.com/manpages/bionic/en/man5/ssh_config.5.html
   ssh -o StrictHostKeyChecking=accept-new root@$HOST_PUBLIC_IP docker swarm init --advertise-addr $HOST_PRIVATE_IP && break
   n=$[$n+1]
   ## If it failed, try to sleep, before retrying

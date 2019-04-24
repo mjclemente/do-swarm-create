@@ -2,18 +2,13 @@
 
 ## This script isn't meant to be run on it's own. It's read and passed into the Droplets that are created and gets run on their initial startup
 
-## If you're using DO's firewall, you might want to disable UFW
-## sudo ufw disable
-## sudo service ufw stop
+## Here's a bit more on what/how this data is used:
+## - https://www.digitalocean.com/docs/droplets/resources/metadata/
+## - https://www.digitalocean.com/community/tutorials/an-introduction-to-cloud-config-scripting
 
-## Update UFW to allow for Swarm mode
-ufw allow 2377/tcp
-ufw allow 7946/tcp
-ufw allow 7946/udp
-ufw allow 4789/udp
-## By default, rate limiting is enabled on port 22
-## sudo ufw allow 22/tcp
-ufw reload
+
+## Important. The option selected for the UFW firewall (enabled/disabled) will be prepended to this script automatically before it is passed to the Droplets
+
 
 ## Restart Docker Daemon
 systemctl restart docker

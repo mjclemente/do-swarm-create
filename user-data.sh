@@ -25,5 +25,5 @@ sudo apt -y update
 sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade
 sudo apt-get -y autoremove
 
-## Remove environment variable
-unset DEBIAN_FRONTEND
+## Set back to default (https://www.debian.org/releases/sarge/alpha/ch05s02.html.en)
+DEBIAN_FRONTEND=newt

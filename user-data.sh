@@ -20,7 +20,7 @@ crontab -l -u root | echo "00 23 * * * cat /dev/null > ~/.bash_history" | cronta
 sudo timedatectl set-timezone EST
 
 ## Update Ubuntu, bypass prompts, Remove obsolete Ubuntu packages
-## This dramatically increases the amount of time it takes to create the images.
+## This dramatically increases the amount of time it takes to create the droplets.
 sudo apt -y update
 sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade
 sudo apt-get -y autoremove

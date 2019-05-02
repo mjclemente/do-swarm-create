@@ -85,6 +85,18 @@ printf "\n%s\n\n" "Back to work, initing the Swarm"
 n=0
 until [ $n -ge 10 ]
 do
+  echo "Confirming access to Docker daemon"
+  ## Run initial SSH command to add key and init swarm - More on the host key checking here: http://manpages.ubuntu.com/manpages/bionic/en/man5/ssh_config.5.html
+  ssh -o StrictHostKeyChecking=accept-new root@$HOST_PUBLIC_IP docker info && break
+  n=$[$n+1]
+  ## If it failed, try to sleep, before retrying
+  echo "Attempt $n failed. Sleeping before retry"
+  sleep 10s
+done
+
+n=0
+until [ $n -ge 10 ]
+do
   echo "Attempting to init Swarm"
   ## Run initial SSH command to add key and init swarm - More on the host key checking here: http://manpages.ubuntu.com/manpages/bionic/en/man5/ssh_config.5.html
   ssh -o StrictHostKeyChecking=accept-new root@$HOST_PUBLIC_IP docker swarm init --advertise-addr $HOST_PRIVATE_IP && break

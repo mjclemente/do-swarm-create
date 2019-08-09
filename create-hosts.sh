@@ -62,12 +62,39 @@ done
 DO_USER_DATA=$(cat ./user-data.sh)
 DO_USER_DATA="${DO_UFW_OPTION}${DO_USER_DATA}"
 
+# Credit for this approach: https://www.shellscript.sh/tips/spinner/
+spin()
+{
+  spinner="/|\\-/|\\-"
+  while :
+  do
+    for i in `seq 0 7`
+    do
+      printf "${spinner:$i:1}"
+      printf "\b"
+      sleep 1
+    done
+  done
+}
+
 printf "\n%s\n\n" "Beginning to create the first Droplet... this might take a little while"
+
+# Start the Spinner:
+spin &
+# Make a note of its Process ID (PID):
+SPIN_PID=$!
+# Kill the spinner on any signal, including our own exit. Don't show the error if it's already killed
+trap "kill -9 $SPIN_PID > /dev/null 2>&1" `seq 0 15`
+
 ## Create the first host - this one will init the Swarm.
 ## We enable monitoring, backups, and private networking
 DROPLET_ID=$( doctl compute droplet create $DO_DROPLET_NAME-0 --size $DO_SIZE --image $DO_IMAGE_NAME --region $DO_REGION --ssh-keys="$DO_SSH_IDS" --user-data="$DO_USER_DATA" $DO_BACKUP_OPTION --enable-monitoring --enable-private-networking --tag-names="$DO_TAGS,manager" --wait --format "ID" --no-header )
 
 echo "First Swarm Manager Created: $DROPLET_ID"
+
+# kill the spinner now:
+kill -9 $SPIN_PID
+
 echo "Retrieving Host IPs"
 
 ## Get public and private IP from Droplet. While doable in one call, this is a little clearer and less fragile

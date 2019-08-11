@@ -127,10 +127,7 @@ export HOST_PRIVATE_IP=$( doctl compute droplet get $DROPLET_ID --format "Privat
 export HOST_PUBLIC_IP=$( doctl compute droplet get $DROPLET_ID --format "PublicIPv4" --no-header )
 echo "Host IPs retrieved: $HOST_PRIVATE_IP, $HOST_PUBLIC_IP"
 
-echo "Sleeping during housecleaning"
-
-## take a breather - sometimes we try to SSH too soon
-sleep 60s
+spinAndSleep 60 "Sometimes we try to SSH in too soon."
 
 printf "\n%s\n\n" "Back to work, initing the Swarm"
 

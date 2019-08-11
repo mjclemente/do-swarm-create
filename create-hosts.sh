@@ -139,8 +139,7 @@ do
   ssh -o StrictHostKeyChecking=accept-new root@$HOST_PUBLIC_IP docker info && break
   n=$[$n+1]
   ## If it failed, try to sleep, before retrying
-  echo "Attempt $n failed. Sleeping before retry"
-  sleep 10s
+  spinAndSleep 10 "Attempt $n failed."
 done
 
 n=0
@@ -151,8 +150,7 @@ do
   ssh -o StrictHostKeyChecking=accept-new root@$HOST_PUBLIC_IP docker swarm init --advertise-addr $HOST_PRIVATE_IP && break
   n=$[$n+1]
   ## If it failed, try to sleep, before retrying
-  echo "Attempt $n failed. Sleeping before retry"
-  sleep 30s
+  spinAndSleep 30 "Attempt $n failed."
 done
 
 ## Get the Manager Join Token

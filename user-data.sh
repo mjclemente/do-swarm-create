@@ -17,7 +17,7 @@ systemctl restart docker
 crontab -l -u root | echo "00 23 * * * cat /dev/null > ~/.bash_history" | crontab -u root -
 
 ## Set timezone to EST
-sudo timedatectl set-timezone EST
+sudo timedatectl set-timezone America/New_York
 
 ## Update Ubuntu, bypass prompts, Remove obsolete Ubuntu packages
 ## This dramatically increases the amount of time it takes to create the droplets.

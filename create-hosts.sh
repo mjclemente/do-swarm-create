@@ -82,8 +82,34 @@ printf "\n\n%s\n" "Beginning to create the first Droplet... this might take a li
 # Start the Spinner and make a note of its Process ID (PID):
 spin &
 SPIN_PID=$!
-# Kill the spinner on any signal, including our own exit. Don't show the error if it's already killed
-trap "kill -9 $SPIN_PID > /dev/null 2>&1" `seq 0 15`
+
+# Credit to https://www.putorius.net/using-trap-to-exit-bash-scripts-cleanly.html
+function egress {
+  # Kill it by PID and don't show any output or the error if it's already killed. (https://stackoverflow.com/a/5722850)
+  kill -9 $SPIN_PID > /dev/null 2>&1
+  wait $SPIN_PID > /dev/null 2>&1
+  echo "Last minute clean-up finished."
+}
+
+# Show spinner for period of seconds. Defaults to 10
+function spinAndSleep {
+  SLEEP_TIME=${1:-10}
+  SLEEP_MESSAGE=${2:-""}
+
+  echo $SLEEP_MESSAGE
+  echo "Sleeping $SLEEP_TIME before continuing."
+  # Start the Spinner and make a note of its Process ID (PID):
+  spin &
+  SPIN_PID=$!
+
+  sleep ${SLEEP_TIME}s
+
+  kill $SPIN_PID && wait $SPIN_PID > /dev/null 2>&1
+  echo "Nap time's over. Back to work."
+}
+
+# Trap the spinner on any signal to clean it up.
+trap egress EXIT
 
 ## Create the first host - this one will init the Swarm.
 ## We enable monitoring, backups, and private networking

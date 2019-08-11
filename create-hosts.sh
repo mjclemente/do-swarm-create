@@ -77,7 +77,7 @@ spin()
   done
 }
 
-printf "\n%s\n\n" "Beginning to create the first Droplet... this might take a little while"
+printf "\n\n%s\n" "Beginning to create the first Droplet... this might take a little while"
 
 # Start the Spinner:
 spin &

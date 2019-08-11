@@ -79,9 +79,8 @@ spin()
 
 printf "\n\n%s\n" "Beginning to create the first Droplet... this might take a little while"
 
-# Start the Spinner:
+# Start the Spinner and make a note of its Process ID (PID):
 spin &
-# Make a note of its Process ID (PID):
 SPIN_PID=$!
 # Kill the spinner on any signal, including our own exit. Don't show the error if it's already killed
 trap "kill -9 $SPIN_PID > /dev/null 2>&1" `seq 0 15`

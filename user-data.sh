@@ -21,9 +21,7 @@ sudo timedatectl set-timezone America/New_York
 
 ## Update Ubuntu, bypass prompts, Remove obsolete Ubuntu packages
 ## This dramatically increases the amount of time it takes to create the droplets.
-sudo apt -y update
-sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade
-sudo apt-get -y autoremove
-
-## Set back to default (https://www.debian.org/releases/sarge/alpha/ch05s02.html.en)
-DEBIAN_FRONTEND=newt
+## Debian frontend command only persists for the individual commmand (https://askubuntu.com/a/972528)
+sudo apt-get -q -y update
+sudo DEBIAN_FRONTEND=noninteractive apt-get -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade
+sudo DEBIAN_FRONTEND=noninteractive apt-get -q -y autoremove

@@ -171,10 +171,17 @@ if [ "$DO_MANAGERS_MORE" -gt 1 ]; then
 
   for manager in $( seq 1 $DO_MANAGERS_MORE ); do
     echo "Creating another manager: $DO_DROPLET_NAME-${manager}"
+
+    # Start the Spinner and make a note of its Process ID (PID):
+    spin &
+    SPIN_PID=$!
+
     HOST_PUBLIC_IP=$( doctl compute droplet create $DO_DROPLET_NAME-${manager} --size $DO_SIZE --image $DO_IMAGE_NAME --region $DO_REGION --ssh-keys="$DO_SSH_IDS" --user-data="$DO_USER_DATA" $DO_BACKUP_OPTION --enable-monitoring --enable-private-networking --tag-names="$DO_TAGS,manager" --wait --format "PublicIPv4" --no-header )
-    echo "Manager created. Sleeping during housecleaning"
-    ## take a breather
-    sleep 30s
+
+    # kill the spinner now:
+    kill $SPIN_PID && wait $SPIN_PID > /dev/null 2>&1
+
+    spinAndSleep 30 "Manager created. Pausing before trying to join Swarm. Sometimes we try to SSH in too soon."
 
     n=0
     until [ $n -ge 10 ]
@@ -184,8 +191,7 @@ if [ "$DO_MANAGERS_MORE" -gt 1 ]; then
       ssh -o StrictHostKeyChecking=accept-new root@$HOST_PUBLIC_IP docker swarm join --token $SWARM_MANAGER_JOIN_TOKEN $HOST_PRIVATE_IP:2377 && break
       n=$[$n+1]
       ## If it failed, try to sleep, before retrying
-      echo "Attempt $n failed. Sleeping before retry"
-      sleep 30s
+      spinAndSleep 10 "Attempt $n failed."
     done
 
   done
@@ -201,10 +207,17 @@ if [ "$DO_WORKER_COUNT" -ge 1 ]; then
   DO_WORKER_COUNT=`expr $DO_MANAGERS_MORE + $DO_WORKER_COUNT`
   for worker in $( seq $DO_MANAGER_COUNT $DO_WORKER_COUNT ); do
     echo "Creating a worker: $DO_DROPLET_NAME-${worker}"
+
+    # Start the Spinner and make a note of its Process ID (PID):
+    spin &
+    SPIN_PID=$!
+
     HOST_PUBLIC_IP=$( doctl compute droplet create $DO_DROPLET_NAME-${worker} --size $DO_SIZE --image $DO_IMAGE_NAME --region $DO_REGION --ssh-keys="$DO_SSH_IDS" --user-data="$DO_USER_DATA" $DO_BACKUP_OPTION --enable-monitoring --enable-private-networking --tag-names="$DO_TAGS,worker" --wait --format "PublicIPv4" --no-header )
 
-    echo "Worker created. Sleeping during housecleaning"
-    sleep 30s
+    # kill the spinner now:
+    kill $SPIN_PID && wait $SPIN_PID > /dev/null 2>&1
+
+    spinAndSleep 30 "Worker created. Pausing before trying to join Swarm. Sometimes we try to SSH in too soon."
 
     n=0
     until [ $n -ge 10 ]
@@ -212,8 +225,8 @@ if [ "$DO_WORKER_COUNT" -ge 1 ]; then
       echo "Attempting to join Swarm"
       ssh -o StrictHostKeyChecking=accept-new root@$HOST_PUBLIC_IP docker swarm join --token $SWARM_WORKER_JOIN_TOKEN $HOST_PRIVATE_IP:2377 && break
       n=$[$n+1]
-      echo "Attempt $n failed. Sleeping before retry"
-      sleep 30s
+      ## If it failed, try to sleep, before retrying
+      spinAndSleep 10 "Attempt $n failed."
     done
 
   done

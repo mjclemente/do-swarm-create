@@ -65,7 +65,7 @@ DO_USER_DATA="${DO_UFW_OPTION}${DO_USER_DATA}"
 # Credit for this approach: https://www.shellscript.sh/tips/spinner/
 spin()
 {
-  spinner="/|\\-/|\\-"
+  spinner="|/-\\|/-\\"
   while :
   do
     for i in `seq 0 7`
